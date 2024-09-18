@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSM Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: calc(100% - 22px);
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status {
+            margin: 20px 0;
+            color: #d9534f;
+        }
+        .status.success {
+            color: #5bc0de;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background: #f2f2f2;
+        }
+        .menu {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .menu a {
+            text-decoration: none;
+            color: #007bff;
+            margin: 0 10px;
+        }
+        .menu a:hover {
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GSM Control</h1>
+        <div class="menu">
+            <a href="/">Home</a>
+            <a href="#" onclick="document.getElementById('add-form').classList.toggle('hidden');">Add Number</a>
+            <a href="#" onclick="document.getElementById('delete-form').classList.toggle('hidden');">Delete Number</a>
+            <a href="#" onclick="document.getElementById('phonebook').classList.toggle('hidden');">Phonebook</a>
+        </div>
+
+        <div id="add-form" class="hidden">
+            <h2>Add Phone Number</h2>
+            <form method="post" action="{{ url_for('add_number') }}">
+                <input type="text" name="shortcode" placeholder="Shortcode" required>
+                <input type="text" name="phone_number" placeholder="Phone Number" required>
+                <button type="submit">Add Number</button>
+            </form>
+        </div>
+
+        <div id="delete-form" class="hidden">
+            <h2>Delete Phone Number</h2>
+            <form method="post" action="{{ url_for('delete_number') }}">
+                <input type="text" name="shortcode" placeholder="Shortcode to Delete" required>
+                <button type="submit">Delete Number</button>
+            </form>
+        </div>
+
+        <div id="phonebook" class="hidden">
+            <h2>Phonebook</h2>
+            <table>
+                <tr>
+                    <th>Shortcode</th>
+                    <th>Phone Number</th>
+                </tr>
+                {% for shortcode, number in phonebook.items() %}
+                <tr>
+                    <td>{{ shortcode }}</td>
+                    <td>{{ number }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="status">
+            {% if status %}
+                <p class="{{ 'success' if 'success' in status else '' }}">{{ status }}</p>
+            {% endif %}
+        </div>
+
+        <form method="post" action="{{ url_for('make_call_from_web') }}">
+            <input type="text" name="shortcode" placeholder="Enter shortcode to make a call" required>
+            <button type="submit">Make a Call</button>
+        </form>
+    </div>
+</body>
+</html>
+
